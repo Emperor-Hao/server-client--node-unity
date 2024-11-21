@@ -2,21 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Text;
 
 public class AppLaunch : UnitySingleton<AppLaunch>
 {
 
     private void Start()
     {
-        var uri = "http://127.0.0.1:3000"; 
-       // var uri = "http://127.0.0.1:3000/version.ini";
-      //  var uri = "http://127.0.0.1:3000/node.jpg";
+          var uri = "http://127.0.0.1:3000/uploadDataResult";
+        //var uri = "http://127.0.0.1:3000/version.ini";
+        //var uri = "http://127.0.0.1:3000/node.jpg";
         //var uri = "http://127.0.0.1:3000/UploadImgFile";
-      //  StartCoroutine(GetMethodTest(uri));
-        StartCoroutine(GetVersionInfo(uri));
+        //StartCoroutine(GetMethodTest(uri));
+        //StartCoroutine(GetVersionInfo(uri));
         //StartCoroutine(DownloadAndSaveBinFile(uri));
-        
         //StartCoroutine(UploadFileToServer(uri));
+        StartCoroutine(UploadMsg(uri));
     }
 
 
@@ -60,6 +61,8 @@ public class AppLaunch : UnitySingleton<AppLaunch>
         yield break;
     }
 
+
+
     /// <summary>
     /// 通过url传参数到服务器示例
     /// </summary>
@@ -74,6 +77,19 @@ public class AppLaunch : UnitySingleton<AppLaunch>
 
         req.Dispose();
         yield break;
+    }
+
+    IEnumerator UploadMsg(string url) {
+        string json = "{\"name\":\"John\", \"age\":30}";
+        UnityWebRequest www = new UnityWebRequest(url, "POST");
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        www.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+        www.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        www.SetRequestHeader("Content-Type", "application/json");
+
+        // 发送请求
+        yield return www.SendWebRequest();
+        Debug.Log("Server Return: " + www.downloadHandler.text);
     }
 
 
