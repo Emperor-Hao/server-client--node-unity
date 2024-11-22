@@ -16,15 +16,6 @@ app.listen(PORT,(err) => {
 app.use("/",express.static(path.join(process.cwd(),"www_root")));
 app.use(bodyParser.json());
 
-app.get("/uploadData",function(req,res){
-    res.setHeader('Content-Type', 'text/plain');
-    const id = req.query.Id;
-    console.log(id);
-    res.send(`Hello Unity, you sent Id=${id}`);
-    res.send("hello unity",id);
-});
-
-
 var fs = require("fs");
 app.put("/UploadImgFile",function(req,res){
     var fd = fs.openSync("./upload/unity2022.gif","w");
@@ -48,4 +39,13 @@ app.post('/uploadDataResult', function (req, res) {
 
     // 返回响应给客户端
     res.send(`Hello Unity, you sent name=${name} and age=${age}`);
+});
+
+//处理get请求并接收数据
+app.get("/submitData",function(req,res){
+    res.setHeader('Content-Type', 'text/plain');
+    const id = req.query.Id;
+    console.log(id);
+    res.send(`Hello Unity, you sent Id=${id}`);
+    res.send("hello unity",id);
 });

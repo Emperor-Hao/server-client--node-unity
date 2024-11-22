@@ -9,14 +9,20 @@ public class AppLaunch : UnitySingleton<AppLaunch>
 
     private void Start()
     {
-          var uri = "http://127.0.0.1:3000/uploadDataResult";
+
+        
         //var uri = "http://127.0.0.1:3000/version.ini";
         //var uri = "http://127.0.0.1:3000/node.jpg";
         //var uri = "http://127.0.0.1:3000/UploadImgFile";
         //StartCoroutine(GetMethodTest(uri));
-        //StartCoroutine(GetVersionInfo(uri));
         //StartCoroutine(DownloadAndSaveBinFile(uri));
         //StartCoroutine(UploadFileToServer(uri));
+
+
+        //var uri = "http://127.0.0.1:3000/submitData";
+        //StartCoroutine(GetSubmitInfo(uri));
+
+        var uri = "http://127.0.0.1:3000/uploadDataResult";
         StartCoroutine(UploadMsg(uri));
     }
 
@@ -79,18 +85,6 @@ public class AppLaunch : UnitySingleton<AppLaunch>
         yield break;
     }
 
-    IEnumerator UploadMsg(string url) {
-        string json = "{\"name\":\"John\", \"age\":30}";
-        UnityWebRequest www = new UnityWebRequest(url, "POST");
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        www.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        www.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        www.SetRequestHeader("Content-Type", "application/json");
-
-        // 发送请求
-        yield return www.SendWebRequest();
-        Debug.Log("Server Return: " + www.downloadHandler.text);
-    }
 
 
     /// <summary>
@@ -114,14 +108,30 @@ public class AppLaunch : UnitySingleton<AppLaunch>
     /// 查看版本信息示例
     /// </summary>
     /// <returns></returns>
-    IEnumerator GetVersionInfo(string uri) {
-        string userInfo = uri+ "/uploadData"+"?Id=1";
+    IEnumerator GetSubmitInfo(string uri) {
+        string userInfo = uri+"?Id=1";
         UnityWebRequest req = UnityWebRequest.Get(userInfo);
+        req.SetRequestHeader("Content-Type", "application/json");
         yield return req.SendWebRequest();
         var msg = req.downloadHandler.text;
         Debug.Log("Server return:" + msg);
 
         //req.Dispose(); // 释放掉我们的请对象;
         yield break;
+    }
+
+
+    IEnumerator UploadMsg(string url)
+    {
+        string json = "{\"name\":\"John\", \"age\":30}";
+        UnityWebRequest www = new UnityWebRequest(url, "POST");
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        www.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+        www.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        www.SetRequestHeader("Content-Type", "application/json");
+
+        // 发送请求
+        yield return www.SendWebRequest();
+        Debug.Log("Server Return: " + www.downloadHandler.text);
     }
 }
